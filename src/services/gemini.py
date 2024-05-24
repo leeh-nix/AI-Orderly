@@ -5,8 +5,8 @@ import os
 import google.generativeai as genai
 
 
-# dotenv.load_dotenv()
-# GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+dotenv.load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 
 # curl -H 'Content-Type: application/json' -d '{ "prompt": { "text": "Write a story about a magic backpack"} }' \
@@ -27,7 +27,7 @@ model_pro = genai.GenerativeModel(
 )
 
 
-def generate_response(text):
+def generate_response(text) -> str:
     print(text)
     response = model_pro.generate_content(
         contents=text,

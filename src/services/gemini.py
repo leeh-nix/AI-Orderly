@@ -27,7 +27,7 @@ model_pro = genai.GenerativeModel(
 )
 
 
-def sendResponse(text):
+def generate_response(text):
     print(text)
     response = model_pro.generate_content(
         contents=text,

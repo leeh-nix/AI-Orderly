@@ -2,6 +2,7 @@ import logging
 import json
 import os
 from flask import Blueprint, request, jsonify, current_app
+from .decorators.security import signature_required
 from .utils.whatsapp_utils import (
     is_valid_whatsapp_message,
     process_whatsapp_message,
@@ -84,9 +85,3 @@ def webhook_post():
     return handle_message()
 
 
-# def main():
-#     app.run(port=int(os.environ.get("PORT", 80)))
-
-
-# if __name__ == "__main__":
-#     main()

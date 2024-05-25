@@ -4,3 +4,7 @@ autopep8
 
 # App
 flask
+
+python-dotenv
+requests
+google-generativeai

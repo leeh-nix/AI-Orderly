@@ -28,17 +28,19 @@ model_pro = genai.GenerativeModel(
 
 
 def generate_response(text) -> str:
+    """
+    Generates a response based on the given text.
+
+    Args:
+        text (str): The input text to generate a response from.
+
+    Returns:
+        str: The generated response.
+
+    """
     print(text)
     response = model_pro.generate_content(
         contents=text,
     )
     result = response.text
     return result
-
-
-# print(sendResponse("Write a story about a magic backpack"))
-
-# import pprint
-
-# for model in genai.list_models():
-# pprint.pprint(model)

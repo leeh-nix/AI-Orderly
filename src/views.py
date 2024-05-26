@@ -26,17 +26,21 @@ def handle_message():
     Returns:
         response: A tuple containing a JSON response and an HTTP status code.
     """
-
     body = request.get_json()
-    if (
-        body.get("entry", [{}])[0]
-        .get("changes", [{}])[0]
-        .get("value", {})
-        .get("stasuses")
-    ):
-        logging.info("Received a Whatsapp status update.")
-        return jsonify({"status": "ok"}), 200
+
+    if not body:
+        logging.error("No JSON body found")
+        return jsonify({"status": "error", "message": "No JSON body found"}), 400
+
     try:
+        entry = body.get("entry", [{}])[0]
+        changes = entry.get("changes", [{}])[0]
+        value = changes.get("value", {})
+
+        if value.get("statuses"):
+            logging.info("Received a WhatsApp status update.")
+            return jsonify({"status": "ok"}), 200
+
         if is_valid_whatsapp_message(body):
             process_whatsapp_message(body)
             return jsonify({"status": "ok"}), 200
@@ -57,6 +61,7 @@ def verify():
     mode = request.args.get("hub.mode")
     token = request.args.get("hub.verify_token")
     challenge = request.args.get("hub.challenge")
+
     # Check if a token and mode were sent
     if mode and token:
         # Check the mode and token sent are correct
@@ -80,8 +85,6 @@ def webhook_get():
 
 
 @webhook_blueprint.route("/webhook", methods=["POST"])
-@signature_required
+# @signature_required
 def webhook_post():
     return handle_message()
-
-

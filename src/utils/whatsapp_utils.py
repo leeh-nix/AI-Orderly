@@ -14,7 +14,7 @@ def log_http_response(response):
 
 
 def get_text_message_input(recipient, text):
-    return json.dump(
+    return json.dumps(
         {
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
@@ -35,7 +35,7 @@ def send_message(data):
         "Authorization": f"Bearer {current_app.config['ACCESS_TOKEN']}",
     }
 
-    url = f"https://graph.facebook.com/{current_app.comfig['VERSION']}/{current_app.config['PHONE_NUMBER_ID']}/messages"
+    url = f"https://graph.facebook.com/{current_app.config['VERSION']}/{current_app.config['PHONE_NUMBER_ID']}/messages"
 
     try:
         response = requests.post(url, headers=headers, data=data, timeout=10)

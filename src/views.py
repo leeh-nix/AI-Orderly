@@ -79,7 +79,7 @@ def verify():
         return jsonify({"status": "error", "message": "Missing parameters"}), 400
 
 
-@webhook_blueprint.route("/webhook", methods=["GET"])
+@webhook_blueprint.route("/webhook", methods=["GET"])  # type: ignore
 def webhook_get():
     return verify()
 

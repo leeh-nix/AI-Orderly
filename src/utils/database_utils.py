@@ -1,13 +1,11 @@
-from ...database.mongodb import *
+import math
+from database.mongodb import users_collection, restaurant_collection
 
 
-def create_user(
+def create_users(
     name,
     phone: int,
     address,
-    # home,
-    # work,
-    # college,
     dob,
     occupation,
     health_condition,
@@ -28,16 +26,15 @@ def create_user(
         restriction (str): The restrictions the user has.
 
     Returns:
-        None
+        String
     """
 
+    if existing_user(phone):
+        return "User already exists"
     user = {
         "name": name,
         "phone": phone,
         "address": address,
-        # "home": home,
-        # "work": work,
-        # "college": college,
         "dob": dob,
         "occupation": occupation,
         "health_condition": health_condition,
@@ -45,7 +42,8 @@ def create_user(
         "restriction": restriction,
     }
 
-    user_collection.insert_one(user)
+    users_collection.insert_one(user)
+    return "User created"
 
 
 def create_restaurant(
@@ -114,7 +112,7 @@ def existing_user(wa_id):
     Returns:
         bool: True if a user with the given WhatsApp ID exists, False otherwise.
     """
-    user = user_collection.find_one({"wa_id": wa_id})
+    user = users_collection.find_one({"wa_id": wa_id})
     if user:
         return True
     else:
@@ -131,5 +129,98 @@ def delete_user(wa_id):
     Returns:
         None
     """
-    user_collection.delete_one({"wa_id": wa_id})
+    users_collection.delete_one({"wa_id": wa_id})
     return "Your account data has been deleted"
+
+
+def fetch_restaurants_details():
+    """
+    Fetches the details of all restaurants from the restaurant_collection in the database.
+
+    Returns:
+        List of dictionaries containing the details of each restaurant.
+    """
+    restaurants = []
+    for restaurant in restaurant_collection.find():
+        restaurants.append(restaurant)
+    return restaurants
+
+
+def calculate_nearest_restaurant(user_latitude, user_longitude):
+    """
+    Calculates the nearest restaurant from the given latitude and longitude of the user.
+
+    Parameters:
+        user_latitude (float): The latitude of the user.
+        user_longitude (float): The longitude of the user.
+
+    Returns:
+        Dictionary containing the details of the nearest restaurant.
+    """
+    restaurants = fetch_restaurants_details()
+    nearest_restaurant = None
+    minimum_distance = float("inf")
+    for restaurant in restaurants:
+        restaurant_gloc = restaurant["gloc"]
+        restaurant_latitude = float(restaurant_gloc[0])
+        restaurant_longitude = float(restaurant_gloc[1])
+        distance = calculate_distance(
+            user_latitude, user_longitude, restaurant_latitude, restaurant_longitude
+        )
+        if distance < minimum_distance:
+            minimum_distance = distance
+            nearest_restaurant = restaurant
+    return nearest_restaurant
+
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculates the distance between two points on the Earth's surface using the Haversine formula.
+
+    Parameters:
+        lat1 (float): The latitude of the first point.
+        lon1 (float): The longitude of the first point.
+        lat2 (float): The latitude of the second point.
+        lon2 (float): The longitude of the second point.
+
+    Returns:
+        The distance between the two points in kilometers.
+    """
+    earth_radius = 6371
+
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+
+    a = math.sin(dlat / 2) * math.sin(dlat / 2) + math.cos(
+        math.radians(lat1)
+    ) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) * math.sin(dlon / 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    distance = earth_radius * c
+
+    return distance
+
+
+x = {
+    "resto_name": "Taco Time",
+    "branches": ["Southside", "Northside"],
+    "gloc": "37.7749295,-122.4194155",
+    "address": "123 Southside St, Bay City, CA 98765",
+    "menu": ["Mexican"],
+    "dish_name": ["Beef Tacos", "Chicken Quesadilla"],
+    "dish_pic": ["url_to_beef_tacos_pic", "url_to_chicken_quesadilla_pic"],
+    "portion_sizing": ["Single", "Double"],
+    "price_portion": [[5, 9], [7, 13]],
+    "rating": 4.2,
+    "contact_person_name": "Michael Brown",
+    "contact_person_cell": "456-789-0123",
+    "resto_rating": 4.3,
+}
+
+
+def serve_pics(nearest_restaurant):
+    dish_name = nearest_restaurant["dish_name"]
+    dish_pic = nearest_restaurant["dish_pic"]
+    
+    return dish_name, dish_pic
+

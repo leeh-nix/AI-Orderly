@@ -4,7 +4,7 @@ import requests
 import re
 
 from flask import current_app, jsonify
-from ..services.gemini import generate_response
+from ..services.gemini import send_message_to_chatbot
 
 
 def log_http_response(response):
@@ -25,8 +25,22 @@ def get_text_message_input(recipient, text):
     )
 
 
-# def generate_response(response):
-#     return response.upper()
+data = {
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": f"{current_app.config['RECIPIENT_WAID']}",
+    "type": "interactive",
+    "interactive": {
+        "type": "address_message",
+        "body": {
+            "text": "Thanks for your order! Tell us what address you'd like this order delivered to."
+        },
+        "action": {
+            "name": "address_message",
+            "parameters": {"country": "COUNTRY_ISO_CODE"},
+        },
+    },
+}
 
 
 def send_message(data):
@@ -79,26 +93,51 @@ def process_whatsapp_message(body):
     message_body = message["text"]["body"]
 
     # TODO: implement custom function here
-    # response = generate_response(message_body)
+    # response = send_message_to_chatbot(message_body)
 
     # Gemini Integration
-    # response = generate_response(message_body, wa_id, name)
-    response = generate_response(message_body)
+    # response = send_message_to_chatbot(message_body, wa_id, name)
+    response = send_message_to_chatbot(message_body)
     response = process_text_for_whatsapp(response)
 
     data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
     send_message(data)
 
 
-def is_valid_whatsapp_message(body):
-    """
-    Check if the incoming webhook event has a valid WhatsApp message structure.
-    """
-    return (
-        body.get("object")
-        and body.get("entry")
-        and body["entry"][0].get("changes")
-        and body["entry"][0]["changes"][0].get("value")
-        and body["entry"][0]["changes"][0]["value"].get("messages")
-        and body["entry"][0]["changes"][0]["value"]["messages"][0]
-    )
+# def is_valid_whatsapp_message(body):
+#     """
+#     Check if the incoming webhook event has a valid WhatsApp message structure.
+#     """
+#     return (
+#         body.get("object")
+#         and body.get("entry")
+#         and body["entry"][0].get("changes")
+#         and body["entry"][0]["changes"][0].get("value")
+#         and body["entry"][0]["changes"][0]["value"].get("messages")
+#         and body["entry"][0]["changes"][0]["value"]["messages"][0]
+#     )
+
+
+def get_delivery_address(data):
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {current_app.config['ACCESS_TOKEN']}",
+    }
+    data = '{"messaging_product": "whatsapp", "recipient_type": "individual", "to": "+918827934978", "type": "interactive", "interactive": { "type": "location_request_message", "body": { "text": "Thanks for your order! Tell us what address you would like this order delivered to." }, "action": { "name": "send_location" } } }'
+
+    url = f"https://graph.facebook.com/{current_app.config['VERSION']}/{current_app.config['PHONE_NUMBER_ID']}/messages"
+
+    try:
+        response = requests.post(url, headers=headers, data=data, timeout=10)
+
+        response.raise_for_status()
+    except requests.Timeout:
+        logging.error("Timeout occured while sending message")
+        return jsonify({"status": "error", "message": "Request timed out"}), 408
+
+    except requests.RequestException as e:
+        logging.error(f"Request failed due to {e}")
+        return jsonify({"status": "error", "message": "Failed to send message"}), 500
+
+    else:
+        log_http_response(response)

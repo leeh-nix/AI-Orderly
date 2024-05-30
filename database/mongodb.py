@@ -15,5 +15,8 @@ except Exception as e:
     print(e)
 
 db = client.get_database("food_nests")
-user_collection = db.wa_user  # collection: whatsapp
-restaurant_collection = db.resto
+users_collection = db.wa_users  # collection: whatsapp users
+restaurant_collection = db.resto  # collection: restaurants
+
+# add a fn to calculate the number of entries so that whenever
+# someone adds to this it returns a number of how many got added or in negative if deleted

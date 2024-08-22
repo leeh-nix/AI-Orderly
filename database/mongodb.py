@@ -1,19 +1,19 @@
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-import dotenv
-import os
+# from pymongo.mongo_client import MongoClient
+# from pymongo.server_api import ServerApi
+# import dotenv
+# import os
 
-dotenv.load_dotenv()
-URI = os.getenv("URI")
-# Create a new client and connect to the server
-client = MongoClient(URI, server_api=ServerApi("1"))
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command("ping")
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+# dotenv.load_dotenv()
+# URI = os.getenv("URI")
+# # Create a new client and connect to the server
+# client = MongoClient(URI, server_api=ServerApi("1"))
+# # Send a ping to confirm a successful connection
+# try:
+#     client.admin.command("ping")
+#     print("Pinged your deployment. You successfully connected to MongoDB!")
+# except Exception as e:
+#     print(e)
 
-db = client.get_database("food_nests")
-user_collection = db.wa_user  # collection: whatsapp
-restaurant_collection = db.resto
+# db = client.get_database("food_nests")
+# user_collection = db.wa_user  # collection: whatsapp
+# restaurant_collection = db.resto

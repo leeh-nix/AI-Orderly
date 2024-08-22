@@ -23,7 +23,7 @@
       enable = true;
       previews = {
         web = {
-          command = [ "python run.py" ];
+          command = [ "./devserver.sh" ];
           env = { PORT = "$PORT"; };
           manager = "web";
         };

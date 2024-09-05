@@ -1,16 +1,33 @@
 generator client {
-    provider = "prisma-client-py"
-    recursive_type_depth = 5
+  provider             = "prisma-client-py"
+  recursive_type_depth = 5
 }
 
 datasource db {
-    provider = "postgresql"
-    url = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-    userId              Int         @id @default(autoincrement())
-    name                String
-    phoneNumber         Int         @unique
-    address           String
+  id          Int    @id @default(autoincrement())
+  name        String
+  phoneNumber Int    @unique
+  address     String
+}
+
+model Restaurant {
+  id      Int    @id @default(autoincrement())
+  address String
+  rating  Int?
+  menu    Dish[]
+}
+
+model Dish {
+  id                     Int         @id @default(autoincrement())
+  name                   String
+  image                  Bytes       @db.ByteA
+  price                  Int
+  rating                 Int?
+  restaurant             Restaurant? @relation(fields: [restaurantRestaurantId], references: [id])
+  restaurantRestaurantId Int?
 }

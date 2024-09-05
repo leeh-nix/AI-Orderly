@@ -1,8 +1,6 @@
-.venv
 .env
-.idx
 ./src/__pycache__/*
-./src/decorators/__pycache__/*
+./src/decorators/__pycache__/
 ./src/services/__pycache__/*
 ./src/utils/__pycache__/*
 .vscode/settings.json

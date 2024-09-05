@@ -86,7 +86,7 @@ def process_whatsapp_message(body):
     response = generate_response(message_body)
     response = process_text_for_whatsapp(response)
 
-    data = get_text_message_input(current_app.config["RECIPIENT_WAID"], response)
+    data = get_text_message_input(wa_id, response)
     send_message(data)
 
 

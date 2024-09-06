@@ -6,6 +6,7 @@ from .utils.whatsapp_utils import (
     is_valid_whatsapp_message,
     process_whatsapp_message,
 )
+from logger import logger
 
 
 webhook_blueprint = Blueprint("webhook", __name__)
@@ -25,8 +26,9 @@ def handle_message():
     Returns:
         response: A tuple containing a JSON response and an HTTP status code.
     """
-
     body = request.get_json()
+    print(body)
+    logger(body)
     if body is not None:
         if (
             body.get("entry", [{}])[0]
@@ -35,13 +37,13 @@ def handle_message():
             .get("stasuses")
         ):
             logging.info("Received a Whatsapp status update.")
+            logger("Received a Whatsapp status update.")
             return jsonify({"status": "ok"}), 200
     try:
         if is_valid_whatsapp_message(body):
             process_whatsapp_message(body)
             return jsonify({"status": "ok"}), 200
         else:
-            # if the request is not a WhatsApp API event, return an error
             return (
                 jsonify({"status": "error", "message": "Not a WhatsApp API event"}),
                 404,
@@ -63,22 +65,33 @@ def verify():
         if mode == "subscribe" and token == current_app.config["VERIFY_TOKEN"]:
             # Respond with 200 OK and challenge token from the request
             logging.info("WEBHOOK_VERIFIED")
+            logger("WEBHOOK_VERIFIED")
             return challenge, 200
         else:
             # Responds with '403 Forbidden' if verify tokens do not match
             logging.info("VERIFICATION_FAILED")
+            logger("VERIFICATION_FAILED")
             return jsonify({"status": "error", "message": "Verification failed"}), 403
     else:
         # Responds with '400 Bad Request' if verify tokens do not match
         logging.info("MISSING_PARAMETER")
+        logger("MISSING_PARAMETER")
         return jsonify({"status": "error", "message": "Missing parameters"}), 400
+
+
+@webhook_blueprint.route("/")
+def home():
+    logger("Working! Lets Goooo!!")
+    return """<h1 style="color:blue">Working! Lets Goooo!!</h1>"""
 
 
 @webhook_blueprint.route("/webhook", methods=["GET"])  # type: ignore
 def webhook_get():
+    logger("Verifying!")
     return verify()
 
 
 @webhook_blueprint.route("/webhook", methods=["POST"])
 def webhook_post():
+    logger("POST webhook hit")
     return handle_message()

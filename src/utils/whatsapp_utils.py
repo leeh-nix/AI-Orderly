@@ -5,12 +5,16 @@ import re
 
 from flask import current_app, jsonify
 from ..services.gemini import generate_response
+from logger import logger
 
 
 def log_http_response(response):
     logging.info(f"Status: {response.status_code}")
+    logger(f"Status: {response.status_code}")
     logging.info(f"Content-type: {response.headers.get('content-type')}")
+    logger(f"Content-type: {response.headers.get('content-type')}")
     logging.info(f"Body: {response.text}")
+    logger(f"Body: {response.text}")
 
 
 def get_text_message_input(recipient, text):
@@ -23,10 +27,6 @@ def get_text_message_input(recipient, text):
             "text": {"preview_url": False, "body": text},
         }
     )
-
-
-# def generate_response(response):
-#     return response.upper()
 
 
 def send_message(data):
@@ -43,10 +43,12 @@ def send_message(data):
         response.raise_for_status()
     except requests.Timeout:
         logging.error("Timeout occured while sending message")
+        logger("Timeout occured while sending message")
         return jsonify({"status": "error", "message": "Request timed out"}), 408
 
     except requests.RequestException as e:
         logging.error(f"Request failed due to {e}")
+        logger(f"Request failed due to {e}")
         return jsonify({"status": "error", "message": "Failed to send message"}), 500
 
     else:
@@ -87,6 +89,7 @@ def process_whatsapp_message(body):
     response = process_text_for_whatsapp(response)
 
     data = get_text_message_input(wa_id, response)
+    logger(f"pocess_whatsapp_message:\n{data}")
     send_message(data)
 
 

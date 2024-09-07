@@ -39,7 +39,7 @@ def send_message(data):
 
     try:
         response = requests.post(url, headers=headers, data=data, timeout=10)
-
+        logger(f"Response: {response}")
         response.raise_for_status()
     except requests.Timeout:
         logging.error("Timeout occured while sending message")

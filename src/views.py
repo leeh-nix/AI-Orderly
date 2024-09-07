@@ -93,5 +93,5 @@ def webhook_get():
 
 @webhook_blueprint.route("/webhook", methods=["POST"])
 def webhook_post():
-    logger("POST webhook hit")
+    # logger("POST webhook hit")
     return handle_message()

@@ -9,17 +9,19 @@ datasource db {
 }
 
 model User {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String
-  phoneNumber Int    @unique
+  phoneNumber Int     @unique
   address     String
+  Order       Order[]
 }
 
 model Restaurant {
-  id      Int    @id @default(autoincrement())
+  id      Int     @id @default(autoincrement())
   address String
   rating  Int?
   menu    Dish[]
+  Order   Order[]
 }
 
 model Dish {
@@ -30,4 +32,15 @@ model Dish {
   rating                 Int?
   restaurant             Restaurant? @relation(fields: [restaurantRestaurantId], references: [id])
   restaurantRestaurantId Int?
+}
+
+model Order {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  restaurantId Int
+  orderStatus  String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id])
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
 }

@@ -1,6 +1,5 @@
 import logging
 import json
-import os
 from flask import Blueprint, request, jsonify, current_app
 from .utils.whatsapp_utils import (
     is_valid_whatsapp_message,

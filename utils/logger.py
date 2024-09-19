@@ -1,13 +1,17 @@
-import os
-from flask import current_app
+import sys
+import logging
 import requests
-import dotenv
+from flask import current_app
 
-dotenv.load_dotenv()
 
-DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or current_app.config.get(
-    "DISCORD_WEBHOOK_URL"
-)
+def configure_logging():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stdout),
+        ],
+    )
 
 
 def logger(content):
@@ -16,6 +20,7 @@ def logger(content):
 
     :param content: The message content to send.
     """
+    DISCORD_WEBHOOK_URL = current_app.config.get("DISCORD_WEBHOOK_URL")
 
     if not DISCORD_WEBHOOK_URL:
         print("Discord Webhook URL is not set correctly.")

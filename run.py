@@ -1,10 +1,11 @@
-import logging
+from flask import Flask
+from endpoints.webhook import WebhookEndpoint
+from utils.bassapiclass import BaseAPIClass
 
-from src import create_app
+flask_app = Flask(__name__)
+app = BaseAPIClass(flask_app)
 
-
-app = create_app()
+app.register_resource(WebhookEndpoint, "/webhook")
 
 if __name__ == "__main__":
-    logging.info("Flask app started")
-    app.run(host="0.0.0.0", port=8000)
+    app.run(debug=True)

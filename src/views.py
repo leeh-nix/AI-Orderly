@@ -27,7 +27,7 @@ def handle_message():
     """
     body = request.get_json()
     print(body)
-    logger(body)
+    logger(f"Body: \n{json.dumps(body, indent=4)}")
     if body:
         if (
             body.get("entry", [{}])[0]

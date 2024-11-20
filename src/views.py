@@ -27,13 +27,13 @@ def handle_message():
     """
     body = request.get_json()
     print(body)
-    logger(body)
+    logger(f"Body: \n{json.dumps(body, indent=4)}")
     if body:
         if (
             body.get("entry", [{}])[0]
             .get("changes", [{}])[0]
             .get("value", {})
-            .get("stasuses")
+            .get("statuses")
         ):
             logging.info("Received a Whatsapp status update.")
             logger("Received a Whatsapp status update.")
@@ -80,7 +80,7 @@ def verify():
 
 @webhook_blueprint.route("/")
 def home():
-    logger("Server started successfully!")
+    # logger("Server started successfully!")
     return """<h1 style="color:blue">Working! Lets Goooo!!</h1>"""
 
 

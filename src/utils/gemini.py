@@ -47,7 +47,7 @@ def generate_response(text) -> str:
         str: The generated response.
 
     """
-    logger(text)
+    logger(f"Gemini text: \n{text}")
 
     menu_data = ""
 

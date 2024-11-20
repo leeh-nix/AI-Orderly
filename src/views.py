@@ -1,6 +1,5 @@
 import logging
 import json
-import os
 from flask import Blueprint, request, jsonify, current_app
 from .utils.whatsapp_utils import (
     is_valid_whatsapp_message,
@@ -29,7 +28,7 @@ def handle_message():
     body = request.get_json()
     print(body)
     logger(body)
-    if body is not None:
+    if body:
         if (
             body.get("entry", [{}])[0]
             .get("changes", [{}])[0]
@@ -81,7 +80,7 @@ def verify():
 
 @webhook_blueprint.route("/")
 def home():
-    logger("Working! Lets Goooo!!")
+    logger("Server started successfully!")
     return """<h1 style="color:blue">Working! Lets Goooo!!</h1>"""
 
 

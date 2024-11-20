@@ -36,7 +36,7 @@ def handle_message():
             .get("statuses")
         ):
             logging.info("Received a Whatsapp status update.")
-            logger("Received a Whatsapp status update.")
+            # logger("Received a Whatsapp status update.")
             return jsonify({"status": "ok"}), 200
     try:
         if is_valid_whatsapp_message(body):

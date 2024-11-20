@@ -101,25 +101,24 @@ def process_whatsapp_message(body):
     message_type = message["type"]  # Determine the message type
 
     # Handle Text Messages
-    if message_type == "text":
-        message_body = message["text"]["body"]
-        logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
-        logger(f"Processing text message from {name} ({wa_id}): {message_body}")
+    # if message_type == "text":
+    message_body = message["text"]["body"]
+    logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
+    logger(f"Processing text message from {name} ({wa_id}): {message_body}")
 
-        # Generate and send the response (Gemini or your logic)
-        response = generate_response(message_body)
-        response = process_text_for_whatsapp(response)
-        data = get_text_message_input(wa_id, response)
-        send_message(data)
+    response = generate_response(message_body)
+    response = process_text_for_whatsapp(response)
+    data = get_text_message_input(wa_id, response)
+    send_message(data)
 
-    else:
-        # Unknown message type handling
-        logging.warning(f"Received an unknown message type from {name} ({wa_id}).")
-        logger(f"Received an unknown message type from {name} ({wa_id}).")
+    # else:
+    #     # Unknown message type handling
+    #     logging.warning(f"Received an unknown message type from {name} ({wa_id}).")
+    #     logger(f"Received an unknown message type from {name} ({wa_id}).")
 
-        response = "Sorry, I didn't understand that."
-        data = get_text_message_input(wa_id, response)
-        send_message(data)
+    #     response = "Sorry, I didn't understand that."
+    #     data = get_text_message_input(wa_id, response)
+    #     send_message(data)
 
 
 def is_valid_whatsapp_message(body):

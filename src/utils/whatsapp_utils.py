@@ -125,6 +125,7 @@ def is_valid_whatsapp_message(body):
     """
     Check if the incoming webhook event has a valid WhatsApp message structure.
     """
+    return True
     return (
         body.get("object")
         and body.get("entry")

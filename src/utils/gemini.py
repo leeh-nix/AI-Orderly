@@ -3,6 +3,8 @@ import os
 import json
 import google.generativeai as genai
 
+from logger import logger
+
 
 dotenv.load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -33,6 +35,7 @@ model_pro = genai.GenerativeModel(
 
 menu = json.loads(open("menu.json", "r").read())
 
+
 def generate_response(text) -> str:
     """
     Generates a response based on the given text.
@@ -44,10 +47,10 @@ def generate_response(text) -> str:
         str: The generated response.
 
     """
-    print(text)
-    
-    menu_data = ""  
-    
+    logger(text)
+
+    menu_data = ""
+
     if "starter" in text.lower():
         menu_data = "Here are some of our starters:\n"
         for item in menu["starters"]:
@@ -60,10 +63,11 @@ def generate_response(text) -> str:
         menu_data = "Here are some of our desserts:\n"
         for item in menu["desserts"]:
             menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
-    
+    else:
+        menu_data = "I'm sorry, I didn't understand your request. Could you please rephrase or ask something else?"
     # Add menu details to the user query
     response_text = f"User asked: {text}\n\n{menu_data}"
-    
+
     response = model_pro.generate_content(contents=response_text)
     result = response.text
     return result

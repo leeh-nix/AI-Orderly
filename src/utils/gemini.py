@@ -47,7 +47,6 @@ def generate_response(text) -> str:
         str: The generated response.
 
     """
-    logger(f"Gemini text: \n{text}")
 
     menu_data = ""
 
@@ -70,4 +69,5 @@ def generate_response(text) -> str:
 
     response = model_pro.generate_content(contents=response_text)
     result = response.text
+    logger(f"Gemini: \n{result}")
     return result

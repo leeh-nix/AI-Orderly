@@ -104,7 +104,7 @@ def process_whatsapp_message(body):
     # if message_type == "text":
     message_body = message["text"]["body"]
     logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
-    logger(f"Processing text message from {name} ({wa_id}): {message_body}")
+    # logger(f"Processing text message from {name} ({wa_id}): {message_body}")
 
     response = generate_response(message_body)
     response = process_text_for_whatsapp(response)

@@ -4,7 +4,7 @@ import requests
 import re
 
 from flask import current_app, jsonify
-from ..services.gemini import generate_response
+from .gemini import generate_response
 from logger import logger
 
 
@@ -73,24 +73,93 @@ def process_text_for_whatsapp(text):
     return whatsapp_style_text
 
 
+# def process_whatsapp_message(body):
+#     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
+#     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
+
+#     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+#     message_body = message["text"]["body"]
+
+#     # TODO: implement custom function here
+#     # response = generate_response(message_body)
+
+#     # Gemini Integration
+#     # response = generate_response(message_body, wa_id, name)
+#     response = generate_response(message_body)
+#     response = process_text_for_whatsapp(response)
+
+#     data = get_text_message_input(wa_id, response)
+#     logger(f"pocess_whatsapp_message:\n{data}")
+#     send_message(data)
+
+
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
 
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
-    message_body = message["text"]["body"]
+    message_type = message["type"]  # Determine the message type
 
-    # TODO: implement custom function here
-    # response = generate_response(message_body)
+    # Handle Text Messages
+    if message_type == "text":
+        message_body = message["text"]["body"]
+        logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
+        logger(f"Processing text message from {name} ({wa_id}): {message_body}")
 
-    # Gemini Integration
-    # response = generate_response(message_body, wa_id, name)
-    response = generate_response(message_body)
-    response = process_text_for_whatsapp(response)
+        # Generate and send the response (Gemini or your logic)
+        response = generate_response(message_body)
+        response = process_text_for_whatsapp(response)
+        data = get_text_message_input(wa_id, response)
+        send_message(data)
 
-    data = get_text_message_input(wa_id, response)
-    logger(f"pocess_whatsapp_message:\n{data}")
-    send_message(data)
+    # Handle Location Messages
+    elif message_type == "location":
+        location = message["location"]
+        latitude = location["latitude"]
+        longitude = location["longitude"]
+
+        logging.info(
+            f"Received location from {name} ({wa_id}): {latitude}, {longitude}"
+        )
+        logger(f"Received location from {name} ({wa_id}): {latitude}, {longitude}")
+
+        # Process location data (You can log or perform operations based on location)
+        response = f"Thank you {name}, we have received your location: {latitude}, {longitude}."
+        data = get_text_message_input(wa_id, response)
+        send_message(data)
+
+    # Handle Interactive Messages (like buttons)
+    elif message_type == "interactive":
+        interactive = message["interactive"]
+        # Determine if it’s a button reply or list reply
+        if interactive["type"] == "button_reply":
+            button_id = interactive["button_reply"]["id"]
+            logging.info(f"Button with ID {button_id} clicked by {name}")
+            logger(f"Button with ID {button_id} clicked by {name}")
+
+            # Process button response
+            response = f"Button with ID {button_id} was clicked!"
+            data = get_text_message_input(wa_id, response)
+            send_message(data)
+
+        elif interactive["type"] == "list_reply":
+            list_reply_id = interactive["list_reply"]["id"]
+            logging.info(f"List option with ID {list_reply_id} selected by {name}")
+            logger(f"List option with ID {list_reply_id} selected by {name}")
+
+            # Process list reply
+            response = f"You selected option with ID {list_reply_id}."
+            data = get_text_message_input(wa_id, response)
+            send_message(data)
+
+    else:
+        # Unknown message type handling
+        logging.warning(f"Received an unknown message type from {name} ({wa_id}).")
+        logger(f"Received an unknown message type from {name} ({wa_id}).")
+
+        response = "Sorry, I didn't understand that."
+        data = get_text_message_input(wa_id, response)
+        send_message(data)
 
 
 def is_valid_whatsapp_message(body):

@@ -4,8 +4,8 @@ import requests
 import re
 
 from flask import current_app, jsonify
-from gemini import generate_response
 from logger import logger
+from src.utils.gemini import generate_response
 
 
 def log_http_response(response):

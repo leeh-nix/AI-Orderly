@@ -24,7 +24,7 @@ def logger(content):
     print(f"Discord Webhook URL: {DISCORD_WEBHOOK_URL}")
 
     data = {
-        "content": content,
+        "content": f"why there is not content? {content}",
     }
 
     try:

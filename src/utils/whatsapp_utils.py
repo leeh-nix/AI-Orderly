@@ -4,8 +4,8 @@ import requests
 import re
 
 from flask import current_app, jsonify
-from .gemini import generate_response
 from logger import logger
+from src.utils.gemini import generate_response
 
 
 def log_http_response(response):
@@ -111,46 +111,6 @@ def process_whatsapp_message(body):
         response = process_text_for_whatsapp(response)
         data = get_text_message_input(wa_id, response)
         send_message(data)
-
-    # Handle Location Messages
-    elif message_type == "location":
-        location = message["location"]
-        latitude = location["latitude"]
-        longitude = location["longitude"]
-
-        logging.info(
-            f"Received location from {name} ({wa_id}): {latitude}, {longitude}"
-        )
-        logger(f"Received location from {name} ({wa_id}): {latitude}, {longitude}")
-
-        # Process location data (You can log or perform operations based on location)
-        response = f"Thank you {name}, we have received your location: {latitude}, {longitude}."
-        data = get_text_message_input(wa_id, response)
-        send_message(data)
-
-    # Handle Interactive Messages (like buttons)
-    elif message_type == "interactive":
-        interactive = message["interactive"]
-        # Determine if it’s a button reply or list reply
-        if interactive["type"] == "button_reply":
-            button_id = interactive["button_reply"]["id"]
-            logging.info(f"Button with ID {button_id} clicked by {name}")
-            logger(f"Button with ID {button_id} clicked by {name}")
-
-            # Process button response
-            response = f"Button with ID {button_id} was clicked!"
-            data = get_text_message_input(wa_id, response)
-            send_message(data)
-
-        elif interactive["type"] == "list_reply":
-            list_reply_id = interactive["list_reply"]["id"]
-            logging.info(f"List option with ID {list_reply_id} selected by {name}")
-            logger(f"List option with ID {list_reply_id} selected by {name}")
-
-            # Process list reply
-            response = f"You selected option with ID {list_reply_id}."
-            data = get_text_message_input(wa_id, response)
-            send_message(data)
 
     else:
         # Unknown message type handling

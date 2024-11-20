@@ -1,0 +1,14 @@
+{
+    "starters": [
+        {"name": "Garlic Bread", "description": "Crispy, buttered bread with garlic and herbs.", "price": "$5"},
+        {"name": "Bruschetta", "description": "Tomato, basil, and balsamic vinegar on toasted bread.", "price": "$6"}
+    ],
+    "mains": [
+        {"name": "Spaghetti Carbonara", "description": "Classic Italian pasta with creamy sauce, pancetta, and parmesan.", "price": "$12"},
+        {"name": "Margherita Pizza", "description": "Tomato, mozzarella, and fresh basil.", "price": "$10"}
+    ],
+    "desserts": [
+        {"name": "Tiramisu", "description": "Layers of coffee-soaked cake with mascarpone cream.", "price": "$7"},
+        {"name": "Cheesecake", "description": "Creamy cheesecake with a graham cracker crust.", "price": "$6"}
+    ]
+}

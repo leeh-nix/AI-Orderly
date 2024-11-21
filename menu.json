@@ -1,14 +1,29 @@
 {
     "starters": [
-        {"name": "Garlic Bread", "description": "Crispy, buttered bread with garlic and herbs.", "price": "$5"},
-        {"name": "Bruschetta", "description": "Tomato, basil, and balsamic vinegar on toasted bread.", "price": "$6"}
+        {"name": "Garlic Bread", "description": "Crispy, buttered bread with garlic and herbs.", "price": "₹415"},
+        {"name": "Bruschetta", "description": "Tomato, basil, and balsamic vinegar on toasted bread.", "price": "₹500"},
+        {"name": "Caprese Salad", "description": "Fresh mozzarella, tomato, basil, and balsamic glaze.", "price": "₹665"},
+        {"name": "Stuffed Mushrooms", "description": "Mushrooms filled with garlic, cheese, and breadcrumbs.", "price": "₹585"},
+        {"name": "Samosa", "description": "Crispy pastry filled with spiced potatoes and peas.", "price": "₹150"},
+        {"name": "Paneer Tikka", "description": "Grilled cubes of paneer marinated in yogurt and spices.", "price": "₹275"}
     ],
     "mains": [
-        {"name": "Spaghetti Carbonara", "description": "Classic Italian pasta with creamy sauce, pancetta, and parmesan.", "price": "$12"},
-        {"name": "Margherita Pizza", "description": "Tomato, mozzarella, and fresh basil.", "price": "$10"}
+        {"name": "Spaghetti Carbonara", "description": "Classic Italian pasta with creamy sauce, pancetta, and parmesan.", "price": "₹996"},
+        {"name": "Margherita Pizza", "description": "Tomato, mozzarella, and fresh basil.", "price": "₹830"},
+        {"name": "Lasagna", "description": "Layers of pasta, meat sauce, béchamel, and mozzarella cheese.", "price": "₹1165"},
+        {"name": "Chicken Parmesan", "description": "Breaded chicken breast topped with marinara sauce and melted mozzarella.", "price": "₹1080"},
+        {"name": "Fettuccine Alfredo", "description": "Rich and creamy sauce over tender fettuccine pasta.", "price": "₹915"},
+        {"name": "Butter Chicken", "description": "Tender chicken cooked in a rich and creamy tomato-based gravy.", "price": "₹550"},
+        {"name": "Paneer Butter Masala", "description": "Paneer cubes in a smooth, creamy tomato gravy.", "price": "₹495"},
+        {"name": "Biryani", "description": "Fragrant rice cooked with spices and choice of chicken or mutton.", "price": "₹675"},
+        {"name": "Dal Tadka", "description": "Lentils cooked with ghee, garlic, and spices, served with rice.", "price": "₹320"}
     ],
     "desserts": [
-        {"name": "Tiramisu", "description": "Layers of coffee-soaked cake with mascarpone cream.", "price": "$7"},
-        {"name": "Cheesecake", "description": "Creamy cheesecake with a graham cracker crust.", "price": "$6"}
+        {"name": "Tiramisu", "description": "Layers of coffee-soaked cake with mascarpone cream.", "price": "₹585"},
+        {"name": "Cheesecake", "description": "Creamy cheesecake with a graham cracker crust.", "price": "₹500"},
+        {"name": "Panna Cotta", "description": "Creamy vanilla pudding with a berry compote.", "price": "₹585"},
+        {"name": "Chocolate Mousse", "description": "Decadent chocolate mousse topped with whipped cream.", "price": "₹500"},
+        {"name": "Gulab Jamun", "description": "Deep-fried milk dough balls soaked in sugary syrup.", "price": "₹150"},
+        {"name": "Ras Malai", "description": "Soft cream-soaked dumplings of milk, flavored with cardamom.", "price": "₹180"}
     ]
 }

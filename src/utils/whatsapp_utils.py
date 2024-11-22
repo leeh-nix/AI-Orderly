@@ -5,16 +5,19 @@ import re
 
 from flask import current_app, jsonify
 from logger import logger
-from src.utils.gemini import generate_response
+from src.utils.gemini import generate_query, generate_response
 
 
 def log_http_response(response):
     logging.info(f"Status: {response.status_code}")
-    logger(f"Status: {response.status_code}")
+    #logger(f"Status: {response.status_code}")
+    
     logging.info(f"Content-type: {response.headers.get('content-type')}")
-    logger(f"Content-type: {response.headers.get('content-type')}")
+    #logger(f"Content-type: {response.headers.get('content-type')}")
+    
+    message_to_log = json.load(response.text)
     logging.info(f"Body: {response.text}")
-    logger(f"Body: {response.text}")
+    logger(f"{message_to_log.get('contacts')[0].get('wa_id')} sent a message")
 
 
 def get_text_message_input(recipient, text):
@@ -92,6 +95,7 @@ def process_text_for_whatsapp(text):
 #     logger(f"pocess_whatsapp_message:\n{data}")
 #     send_message(data)
 
+menu = json.loads(open("menu.json", "r").read())
 
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
@@ -106,7 +110,15 @@ def process_whatsapp_message(body):
     logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
     # logger(f"Processing text message from {name} ({wa_id}): {message_body}")
 
-    response = generate_response(message_body)
+    # NOTE - this will probably not work as expected, check before using eval() 
+    assert menu is not None # the menu object must exist
+    query = generate_query(message_body)
+    menu_data = eval(query)
+
+    # Creating message for new request
+    req = f"Menu: {menu_data}\n Query: {message_body}"
+
+    response = generate_response(req)
     response = process_text_for_whatsapp(response)
     data = get_text_message_input(wa_id, response)
     send_message(data)

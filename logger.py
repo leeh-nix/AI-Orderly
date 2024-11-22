@@ -1,4 +1,5 @@
 import os
+from certifi import contents
 from flask import current_app
 import requests
 import dotenv
@@ -9,8 +10,7 @@ DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or current_app.config.get
     "DISCORD_WEBHOOK_URL"
 )
 
-
-def logger(content):
+def logger(content, log_type: str = "info"):
     """
     Sends a message to a Discord channel using a webhook.
 
@@ -23,7 +23,15 @@ def logger(content):
     print(f"Discord Webhook URL: {DISCORD_WEBHOOK_URL}")
 
     data = {
-        "content": f"Logger: {content}",
+        "content": "",
+        "embeds": [
+            {
+                "type": "rich",
+                "title": log_type.capitalize(),
+                "description": content,
+                "color": 0x0000FF if log_type == "info" else 0xFF0000,
+            }
+        ],
     }
 
     try:

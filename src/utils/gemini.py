@@ -33,7 +33,37 @@ model_pro = genai.GenerativeModel(
 )
 
 
-menu = json.loads(open("menu.json", "r").read())
+query_model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash-latest",
+    system_instruction="""
+You are a query generator for a menu.json file stored on backend for a restaurant, your task is to find the intent of user in the given user message and generate a query that will be used by our backend program to select the correct parts of our menu
+
+Do not conatain any header or footer text, only the query should be there without the delimitor backticks
+
+Use the following structure of menu.json (python dictionary) for queries:
+menu = {
+    "starters": [...],
+    "mains": [...],
+    "desserts": [...]
+}
+
+Examples: 
+user: `What do you guys server in the beginning?`
+you: `menu["starters"]`
+
+user: `What about main course and sweets?`
+you: `menu["starters"] + menu["desserts"]`
+""",
+    safety_settings=None,
+)
+
+
+def generate_query(text):
+    response = query_model.generate_content(contents=text)
+    result = response.text
+    print(f"Gemini Query: \n{result}")
+    return result
+
 
 
 def generate_response(text) -> str:
@@ -48,26 +78,26 @@ def generate_response(text) -> str:
 
     """
 
-    menu_data = ""
+    # menu_data = ""
 
-    if "starter" in text.lower():
-        menu_data = "Here are some of our starters:\n"
-        for item in menu["starters"]:
-            menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
-    elif "main" in text.lower():
-        menu_data = "Here are some of our mains:\n"
-        for item in menu["mains"]:
-            menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
-    elif "dessert" in text.lower():
-        menu_data = "Here are some of our desserts:\n"
-        for item in menu["desserts"]:
-            menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
-    else:
-        menu_data = "I'm sorry, I didn't understand your request. Could you please rephrase or ask something else?"
-    # Add menu details to the user query
-    response_text = f"User asked: {text}\n\n{menu_data}"
+    # if "starter" in text.lower():
+    #     menu_data = "Here are some of our starters:\n"
+    #     for item in menu["starters"]:
+    #         menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
+    # elif "main" in text.lower():
+    #     menu_data = "Here are some of our mains:\n"
+    #     for item in menu["mains"]:
+    #         menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
+    # elif "dessert" in text.lower():
+    #     menu_data = "Here are some of our desserts:\n"
+    #     for item in menu["desserts"]:
+    #         menu_data += f"{item['name']}: {item['description']} - {item['price']}\n"
+    # else:
+    #     menu_data = "I'm sorry, I didn't understand your request. Could you please rephrase or ask something else?"
+    # # Add menu details to the user query
+    # response_text = f"User asked: {text}\n\n{menu_data}"
 
-    response = model_pro.generate_content(contents=response_text)
+    response = model_pro.generate_content(contents=text)
     result = response.text
     logger(f"Gemini: \n{result}")
     return result

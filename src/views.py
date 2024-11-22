@@ -93,4 +93,6 @@ def webhook_get():
 @webhook_blueprint.route("/webhook", methods=["POST"])
 def webhook_post():
     # logger("POST webhook hit")
-    return handle_message()
+    response = jsonify({"status": "ok"})
+    handle_message()
+    return response

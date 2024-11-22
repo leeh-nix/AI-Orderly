@@ -10,11 +10,11 @@ from src.utils.gemini import generate_query, generate_response
 
 def log_http_response(response):
     logging.info(f"Status: {response.status_code}")
-    #logger(f"Status: {response.status_code}")
-    
+    # logger(f"Status: {response.status_code}")
+
     logging.info(f"Content-type: {response.headers.get('content-type')}")
-    #logger(f"Content-type: {response.headers.get('content-type')}")
-    
+    # logger(f"Content-type: {response.headers.get('content-type')}")
+
     message_to_log = json.load(response.text)
     logging.info(f"Body: {response.text}")
     logger(f"{message_to_log.get('contacts')[0].get('wa_id')} sent a message")
@@ -55,7 +55,8 @@ def send_message(data):
         return jsonify({"status": "error", "message": "Failed to send message"}), 500
 
     else:
-        log_http_response(response)
+        print(response)
+        # log_http_response(response)
 
 
 def process_text_for_whatsapp(text):
@@ -97,6 +98,7 @@ def process_text_for_whatsapp(text):
 
 menu = json.loads(open("menu.json", "r").read())
 
+
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
@@ -110,8 +112,8 @@ def process_whatsapp_message(body):
     logging.info(f"Processing text message from {name} ({wa_id}): {message_body}")
     # logger(f"Processing text message from {name} ({wa_id}): {message_body}")
 
-    # NOTE - this will probably not work as expected, check before using eval() 
-    assert menu is not None # the menu object must exist
+    # NOTE - this will probably not work as expected, check before using eval()
+    assert menu is not None  # the menu object must exist
     query = generate_query(message_body)
     menu_data = eval(query)
 

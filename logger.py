@@ -16,6 +16,7 @@ def logger(content, log_type: str = "info"):
 
     :param content: The message content to send.
     """
+    return
     if not DISCORD_WEBHOOK_URL:
         print("Discord Webhook URL is not set correctly.")
         return
